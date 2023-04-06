@@ -7,12 +7,18 @@ while True:
     ports = [port for port in os.listdir('/dev') if port.startswith('ttyUSB')]
     ports += [port for port in os.listdir('/dev') if port.startswith('ttyACM')]
 
-    print("Available serial ports:")
+    print("\nAvailable serial ports:")
     for i, port in enumerate(ports):
         print(f"{i}: {port}")
 
+    print("e: Exit")
+
     # Select serial port
-    port = f"/dev/{ports[int(input('Select serial port: '))]}"
+    port_number = input('Select serial port: ')
+    if port_number == 'e':
+        break
+
+    port = f"/dev/{ports[int(port_number)]}"
 
     # Open serial port
     ser = Serial(port, 115200)
@@ -20,7 +26,7 @@ while True:
     # Read and print data
     while True:
         try:
-            line = ser.readline().decode('utf-8').rstrip()
+            line = ser.readline().decode('ascii', errors='ignore').rstrip()
             print(line)
         except KeyboardInterrupt:
             ser.close()
